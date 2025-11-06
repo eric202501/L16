@@ -148,38 +148,41 @@ def handle_message(event):
 
         line_bot_api.reply_message(event.reply_token, image_carousel_template)
 
-    # 如果收到訊息是「PTT」就隨機選三個板
-    if event.message.text == 'PTT':
-        board_info = random_ptt_boards()
-        # 從 board_info 裡隨機挑選三個板
-        board_list = random.sample(board_info, k=3)
-
-        board_template = TemplateSendMessage(
-            alt_text='PTT boards template',
-            template=ImageCarouselTemplate(
-                columns=[
-                    ImageCarouselColumn(
-                        image_url='https://down-tw.img.susercontent.com/file/4968c4b4f185386a219b6396c2698dfc',  # 這裡可以用 PTT 的通用 logo
-                        action=URIAction(
-                            label=board_list[0][0],  # 第一個板名
-                            uri=board_list[0][1]     # 第一個板的 URL
-                        )),
-                    ImageCarouselColumn(
-                        image_url='https://down-tw.img.susercontent.com/file/4968c4b4f185386a219b6396c2698dfc',
-                        action=URIAction(
-                            label=board_list[1][0],  # 第二個板名
-                            uri=board_list[1][1]     # 第二個板的 URL
-                        )),
-                    ImageCarouselColumn(
-                        image_url='https://down-tw.img.susercontent.com/file/4968c4b4f185386a219b6396c2698dfc',
-                        action=URIAction(
-                            label=board_list[2][0],  # 第三個板名
-                            uri=board_list[2][1]     # 第三個板的 URL
-                        ))
-                ]
+    
+    if event.message.text == 'ptt':
+        try:
+            board_info = random_ptt_boards()
+            # 從 board_info 裡隨機挑選三個板
+            board_list = random.sample(board_info, k=3)
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(board_list)))
+            board_template = TemplateSendMessage(
+                alt_text='PTT boards template',
+                template=ImageCarouselTemplate(
+                    columns=[
+                        ImageCarouselColumn(
+                            image_url='https://down-tw.img.susercontent.com/file/4968c4b4f185386a219b6396c2698dfc',  # 這裡可以用 PTT 的通用 logo
+                            action=URIAction(
+                                label=board_list[0][0],  # 第一個板名
+                                uri=board_list[0][1]     # 第一個板的 URL
+                            )),
+                        ImageCarouselColumn(
+                            image_url='https://down-tw.img.susercontent.com/file/4968c4b4f185386a219b6396c2698dfc',
+                            action=URIAction(
+                                label=board_list[1][0],  # 第二個板名
+                                uri=board_list[1][1]     # 第二個板的 URL
+                            )),
+                        ImageCarouselColumn(
+                            image_url='https://down-tw.img.susercontent.com/file/4968c4b4f185386a219b6396c2698dfc',
+                            action=URIAction(
+                                label=board_list[2][0],  # 第三個板名
+                                uri=board_list[2][1]     # 第三個板的 URL
+                            ))
+                    ]
+                )
             )
-        )
-        line_bot_api.reply_message(event.reply_token, board_template)
+            line_bot_api.reply_message(event.reply_token, board_template)
+        except Exception as e:
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(e)))
 
 
 if __name__ == "__main__":
