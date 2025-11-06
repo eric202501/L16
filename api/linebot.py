@@ -154,7 +154,16 @@ def handle_message(event):
             board_info = []
             response = requests.get('https://www.ptt.cc/bbs/index.html')
             soup = BeautifulSoup(response.text, 'html.parser')
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(soup)[0:1000]))
+            data = soup.find_all('div', class_='b-ent')
+
+            for board in data:
+                board_name = board.find('div', class_='board-name').text
+                board_url = 'https://www.ptt.cc' + board.find('a')['href']
+                temp = [board_name, board_url]  # 把板名和 URL 整理成清單
+                board_info.append(temp)
+
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(len(board_info))))
+
         except Exception as e:
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(e)))
 
