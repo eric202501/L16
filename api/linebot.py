@@ -1,13 +1,9 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import (MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage, CarouselColumn,
-                            CarouselTemplate, MessageAction, URIAction, ImageCarouselColumn, ImageCarouselTemplate,
-                            ImageSendMessage, ButtonsTemplate, ConfirmTemplate)
+from linebot.models import (MessageEvent, TextMessage, TextSendMessage)
 import os
-import requests
-from bs4 import BeautifulSoup
-import random
+import html  # 使用標準庫的 escape 函數
 
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 line_handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
@@ -20,12 +16,10 @@ def home():
 
 @app.route("/webhook", methods=['POST'])
 def callback():
-    # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
-    # get request body as text
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
-    # handle webhook body
+
     try:
         line_handler.handle(body, signature)
     except InvalidSignatureError:
@@ -34,112 +28,14 @@ def callback():
 
 @line_handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
- 
     if event.message.text.lower() == "test":
         reply_message = "第32行的reply_message=改成自己想傳送的訊息"
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=reply_message))
-
-        
-    elif event.message.text.lower() == 'confirm':
-        confirm_template = TemplateSendMessage(
-            alt_text = 'confirm template',
-            template = ConfirmTemplate(
-                text = 'drink coffee?',
-                actions = [
-                    MessageAction(
-                        label = 'yes',
-                        text = 'yes'),
-                    MessageAction(
-                        label = 'no',
-                        text = 'no')]
-                )
-            )
-        line_bot_api.reply_message(event.reply_token, confirm_template)
-
-
-    #按鈕樣板
-    elif event.message.text.lower() == 'button':
-        buttons_template = TemplateSendMessage(
-            alt_text = 'buttons template',
-            template = ButtonsTemplate(
-                thumbnail_image_url='https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg',
-                title = 'Brown Cafe',
-                text = 'Enjoy your coffee',
-                actions = [
-                    MessageAction(
-                        label = '咖啡有什麼好處',
-                        text = '讓人有精神'),
-                    URIAction(
-                        label = '伯朗咖啡',
-                        uri = 'https://www.mrbrown.com.tw/')]
-                )
-            )
-
-        line_bot_api.reply_message(event.reply_token, buttons_template)
-
-
-    #carousel樣板
-    elif event.message.text.lower() == 'carousel':
-        carousel_template = TemplateSendMessage(
-            alt_text = 'carousel template',
-            template = CarouselTemplate(
-                columns = [
-                    #第一個
-                    CarouselColumn(
-                        thumbnail_image_url = 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg',
-                        title = 'this is menu1',
-                        text = 'menu1',
-                        actions = [
-                            MessageAction(
-                                label = '咖啡有什麼好處',
-                                text = '讓人有精神'),
-                            URIAction(
-                                label = '伯朗咖啡',
-                                uri = 'https://www.mrbrown.com.tw/')]),
-                    #第二個
-                    CarouselColumn(
-                        thumbnail_image_url = 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg',
-                        title = 'this is menu2',
-                        text = 'menu2',
-                        actions = [
-                            MessageAction(
-                                label = '咖啡有什麼好處',
-                                text = '讓人有精神'),
-                            URIAction(
-                                label = '伯朗咖啡',
-                                uri = 'https://www.mrbrown.com.tw/')])
-                ])
-            )
-
-        line_bot_api.reply_message(event.reply_token, carousel_template)
-
-
-    #image carousel樣板
-    elif event.message.text.lower() == 'image carousel':
-        image_carousel_template = TemplateSendMessage(
-            alt_text = 'image carousel template',
-            template = ImageCarouselTemplate(
-                columns = [
-                    #第一張圖
-                    ImageCarouselColumn(
-                        image_url = 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg',
-                        action = URIAction(
-                            label = '伯朗咖啡',
-                            uri = 'https://www.mrbrown.com.tw/')),
-                    #第二張圖
-                    ImageCarouselColumn(
-                        image_url = 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg',
-                        action = URIAction(
-                            label = '伯朗咖啡',
-                            uri = 'https://www.mrbrown.com.tw/'))                       
-                ])
-            )
-
-        line_bot_api.reply_message(event.reply_token, image_carousel_template)
-
     else:
         reply_message = event.message.text
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=reply_message))
+    
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=reply_message))
 
 if __name__ == "__main__":
     app.run()
