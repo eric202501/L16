@@ -162,7 +162,7 @@ def handle_message(event):
                 temp = [board_name, board_url]  # 把板名和 URL 整理成清單
                 board_info.append(temp)
 
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(len(board_info))))
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(len(data))))
 
         except Exception as e:
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(e)))
