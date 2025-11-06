@@ -165,8 +165,9 @@ def handle_message(event):
                 board_info.append(temp)
             
             # 從 board_info 裡隨機挑選三個板
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(board_info)))
             board_list = random.sample(board_info, k=3)
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(board_list)))
+            
             board_template = TemplateSendMessage(
                 alt_text='PTT boards template',
                 template=ImageCarouselTemplate(
