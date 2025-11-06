@@ -40,7 +40,7 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text=reply_message))
 
         
-    if event.message.text.lower() == 'confirm':
+    elif event.message.text.lower() == 'confirm':
         confirm_template = TemplateSendMessage(
             alt_text = 'confirm template',
             template = ConfirmTemplate(
@@ -58,7 +58,7 @@ def handle_message(event):
 
 
     #按鈕樣板
-    if event.message.text.lower() == 'button':
+    elif event.message.text.lower() == 'button':
         buttons_template = TemplateSendMessage(
             alt_text = 'buttons template',
             template = ButtonsTemplate(
@@ -79,7 +79,7 @@ def handle_message(event):
 
 
     #carousel樣板
-    if event.message.text.lower() == 'carousel':
+    elif event.message.text.lower() == 'carousel':
         carousel_template = TemplateSendMessage(
             alt_text = 'carousel template',
             template = CarouselTemplate(
@@ -115,7 +115,7 @@ def handle_message(event):
 
 
     #image carousel樣板
-    if event.message.text.lower() == 'image carousel':
+    elif event.message.text.lower() == 'image carousel':
         image_carousel_template = TemplateSendMessage(
             alt_text = 'image carousel template',
             template = ImageCarouselTemplate(
