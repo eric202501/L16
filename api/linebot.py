@@ -34,7 +34,12 @@ def callback():
 
 @line_handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+ 
+    if event.message.text.lower() == "test":
+        reply_message = "第32行的reply_message=改成自己想傳送的訊息"
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=reply_message))
 
+        
     if event.message.text == 'confirm':
         confirm_template = TemplateSendMessage(
             alt_text = 'confirm template',
