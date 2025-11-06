@@ -154,7 +154,7 @@ def handle_message(event):
             board_info = []
             response = requests.get('https://www.ptt.cc/bbs/index.html')
             soup = BeautifulSoup(response.text, 'html.parser')
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(soup)))
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(soup)[0:1000]))
         except Exception as e:
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text=str(e)))
 
