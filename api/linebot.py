@@ -35,7 +35,8 @@ def callback():
 def handle_message(event):
     if event.message.text.lower() == "test":
         reply_message = "第32行的reply_message=改成自己想傳送的訊息"
-    elif event.message.text.lower() == "button":
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_message))
+    if event.message.text.lower() == "button":
         try:
             buttons_template = TemplateSendMessage(
                 alt_text='buttons template',
@@ -59,12 +60,6 @@ def handle_message(event):
                 event.reply_token,
                 TextSendMessage(text=str(e)))
         
-    else:
-        reply_message = event.message.text
-    
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=reply_message))
-
+  
 if __name__ == "__main__":
     app.run()
